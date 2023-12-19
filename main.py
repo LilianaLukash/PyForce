@@ -71,10 +71,22 @@ def handle_all(address_book):
 
 
 @input_error
+def handle_add_address(command, address_book):
+    _, name, address = command.split()
+    address_book.find(name).add_address(address)
+    return f"Address added for {name}."
+
+@input_error
 def handle_add_birthday(command, address_book):
     _, name, birthday = command.split()
     address_book.find(name).add_birthday(birthday)
     return f"Birthday added for {name}."
+
+@input_error
+def handle_add_email(command, address_book):
+    _, name, email = command.split()
+    address_book.find(name).add_email(email)
+    return f"Email added for {name}."
 
 
 @input_error
@@ -123,8 +135,12 @@ def main():
             print(handle_add_birthday(command, address_book))
         elif command.startswith("show-birthday"):
             print(handle_show_birthday(command, address_book))
-        elif command.startswith("add"):
+        elif command.startswith("add-contact"):
             print(handle_add(command, address_book))
+        elif command.startswith("add-address"):
+            print(handle_add_address(command, address_book))
+        elif command.startswith("add-email"):
+            print(handle_add_email(command, address_book))
         elif command == "birthdays":
             handle_all_birthdays(address_book)
         else:
