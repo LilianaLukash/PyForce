@@ -23,9 +23,17 @@ def handle_hello():
 
 @input_error
 def handle_add(command, address_book):
-    _, name, phone, *birthday = command.split()
-    birthday = birthday[0] if birthday else None
-    address_book.add_record(name, phone, birthday)
+    _ = command.split()
+    name = input("Enter Name: ")
+    phone = input("Enter Phone: ")
+    address = input("Enter Address: ")
+    birthday = input("Enter Birthday: ")
+    email = input("Enter Email: ")
+    
+    address = address if address else None
+    birthday = birthday if birthday else None
+    email = email if email else None
+    address_book.add_record(name, phone, address, birthday, email)
     return "Contact added."
 
 
@@ -55,8 +63,10 @@ def handle_delete(command, address_book):
 def handle_all(address_book):
     result = "All records:\n"
     for name, record in address_book.data.items():
-        birthday_info = f" ({record.birthday.value})" if record.birthday else ""
-        result += f"{name}: {record.phones[0].value}{birthday_info}\n"
+        address_info = f"{record.address.value}" if record.address else "None"
+        birthday_info = f"({record.birthday.value})" if record.birthday else "None"
+        email_info = f"{record.email.value}" if record.email else "None"
+        result += f"{name}: Phone: {record.phones[0].value}  Address: {address_info}  Birthday: {birthday_info} Email: {email_info}\n"
     return result
 
 
