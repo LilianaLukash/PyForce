@@ -1,5 +1,6 @@
 from models import *
 from datetime import datetime
+from modelsfornotes import *
 
 
 def input_error(func):
@@ -75,7 +76,33 @@ def handle_show_birthday(command, address_book):
         return f"Birthday for {name}: {record.birthday.value}"
     else:
         return f"No birthday found for {name}."
+    
+def handle_notes_add(command, note_book):
+    _, title, text = command.split()
+    note_book.addnote(title, text)
+    tags_to_add = input('Note was added. Do you want to add tags? If yes, write separate by \",\", if not, put "n"')
+    if tags_to_add != "n":
+        tags = tags_to_add.split(',')
+        for newtag in tags:
+            note_to_edit = note_book.searchbytitle(title)
+            if note_to_edit:
+                note_to_edit.addtag(newtag.strip())
+                print("Added")
+            else:
+                print(f"Note with title'{title}' was not found")
 
+def handle_notes_edit(command, note_book):
+    _, title, new_text = command.split()
+    note_book.editbytitle(title, new_text)
+
+def handle_notes_remove(command, note_book) :
+    _, title = command.split()
+    note_book.removenote(title)
+
+def handle_notes_find(command, note_book):
+    _, title = command.split()
+    note = note_book.searchbytitle(title)
+    print(f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}")
 
 def main():
     try:
@@ -86,6 +113,7 @@ def main():
         file_exists = False
 
     address_book = AddressBook()
+    note_book = NotesBook([])
 
     if file_exists:
         address_book.load_from_file("contacts")
@@ -117,6 +145,18 @@ def main():
             print(handle_add(command, address_book))
         elif command == "birthdays":
             handle_all_birthdays(address_book)
+        elif command.startswith("noteadd"):
+            print("hi")
+            handle_notes_add(command, note_book)
+        elif command.startswith("notesall"):
+            note_book.all()
+        elif command.startswith("notesedit"):
+            handle_notes_edit(command, note_book)
+        elif command.startswith("notesremove"):
+            handle_notes_remove(command, note_book)        
+        elif command.startswith("notesfind"):
+            handle_notes_find(command, note_book)
+        
         else:
             print("Invalid command. Try again.")
 

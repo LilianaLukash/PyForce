@@ -167,4 +167,4 @@ def handle_all_birthdays(address_book):
                 print(f"{day_of_week}: {', '.join(names)}")
 
             if day in birthdays_by_date:
-                del birthdays_by_date[day]
+                del birthdays_by_date[day] 
