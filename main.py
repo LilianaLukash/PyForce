@@ -13,6 +13,10 @@ def input_error(func):
             return str(e)
         except IndexError:
             return "Give me name and phone please."
+        # except TypeError:
+        #     return "Please use correct number of arguments"
+        except Exception as ex:
+            print(f"Unexpected exception {ex}: in def {func.__name__}()")
 
     return wrapper
 
@@ -31,9 +35,9 @@ def handle_add(command, address_book):
     birthday = input("Enter Birthday: ")
     email = input("Enter Email: ")
     
-    address = address if address else None
-    birthday = birthday if birthday else None
-    email = email if email else None
+    address = address or None
+    birthday = birthday or None
+    email = email or None
     address_book.add_record(name, phone, address, birthday, email)
     return "Contact added."
 
@@ -42,7 +46,7 @@ def handle_add(command, address_book):
 def handle_change(command, address_book):
     _, name, phone = command.split()
     record = address_book.find(name)
-    record.edit_phone(record.phones[0].value, phone)
+    record.edit_phone(record.phones, phone)
     return "Contact changed."
 
 
@@ -50,7 +54,7 @@ def handle_change(command, address_book):
 def handle_phone(command, address_book):
     _, name = command.split()
     record = address_book.find(name)
-    return f"Phone number for {name}: {record.phones[0].value}"
+    return f"Phone numbers for {name}: {','.join(str(s.value) for s in record.phones)}"
 
 
 @input_error
@@ -62,13 +66,10 @@ def handle_delete(command, address_book):
 
 @input_error
 def handle_all(address_book):
-    result = "All records:\n"
-    for name, record in address_book.data.items():
-        address_info = f"{record.address.value}" if record.address else "None"
-        birthday_info = f"({record.birthday.value})" if record.birthday else "None"
-        email_info = f"{record.email.value}" if record.email else "None"
-        result += f"{name}: Phone: {record.phones[0].value}  Address: {address_info}  Birthday: {birthday_info} Email: {email_info}\n"
-    return result
+    if address_book.data:
+        return "\n".join([f"{v}" for k, v in address_book.data.items()])
+    else:
+        return "Data is empty, nothing to show"
 
 
 @input_error
