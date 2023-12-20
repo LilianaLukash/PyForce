@@ -125,7 +125,7 @@ def handle_notes_edit(command, note_book):
     note_book.editbytitle(title, new_text)
 
 
-def handle_notes_remove(command, note_book: NotesBook([])):
+def handle_notes_remove(command, note_book):
     _, title = command.split()
     note_book.removenote(title)
 
