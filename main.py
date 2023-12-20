@@ -105,7 +105,7 @@ def handle_show_birthday(command, address_book):
 
 
 def handle_notes_add(command, note_book):
-    _, title, text = command.split()
+    _, title, text = command.split(":")
     note_book.addnote(title, text)
     tags_to_add = input(
         'Note was added. Do you want to add tags? If yes, write separate by ",", if not, put "n"'
@@ -138,13 +138,21 @@ def handle_notes_find(command, note_book):
     )
 
 def handle_findbytag(command, note_book):
-    _, tag = command.split()
+    _, tag = command.split(" ", 1)
     found = note_book.searchbytag(tag)
     if found == []:
         print("No notes with this tag")
     else:
         for note in found:
             print(
+        f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
+    )
+
+def handle_addtag(command, note_book):
+    _, title, tag = command.split(":")
+    note = note_book.searchbytitle(title)
+    note.addtag(tag)
+    print(
         f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
     )
 
@@ -209,7 +217,7 @@ def main():
         elif command == "birthdays":
             handle_all_birthdays(address_book)
         elif command.startswith("noteadd"):
-            print("hi")
+
             handle_notes_add(command, note_book)
         elif command.startswith("notesall"):
             note_book.all()
@@ -219,8 +227,10 @@ def main():
             handle_notes_remove(command, note_book)
         elif command.startswith("notesfind"):
             handle_notes_find(command, note_book)
-        elif command.startswith("notesfind"):
+        elif command.startswith("findbytag"):
             handle_findbytag(command, note_book)
+        elif command.startswith("addtag"):
+            handle_addtag(command, note_book)
 
         else:
             print("Invalid command. Try again.")
