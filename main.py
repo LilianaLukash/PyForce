@@ -137,6 +137,18 @@ def handle_notes_find(command, note_book):
         f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
     )
 
+def handle_findbytag(command, note_book):
+    _, tag = command.split()
+    found = note_book.searchbytag(tag)
+    if found == []:
+        print("No notes with this tag")
+    else:
+        for note in found:
+            print(
+        f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
+    )
+
+
 
 def main():
     try:
@@ -194,6 +206,8 @@ def main():
             handle_notes_remove(command, note_book)
         elif command.startswith("notesfind"):
             handle_notes_find(command, note_book)
+        elif command.startswith("notesfind"):
+            handle_findbytag(command, note_book)
 
         else:
             print("Invalid command. Try again.")
