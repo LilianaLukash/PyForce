@@ -149,7 +149,6 @@ def handle_findbytag(command, note_book):
     )
 
 
-
 def main():
     try:
         with open("contacts", "rb"):
@@ -158,19 +157,33 @@ def main():
     except FileNotFoundError:
         file_exists = False
 
+    try:
+        with open("notes", "rb"):
+            pass
+        file_notes_exists = True
+    except FileNotFoundError:
+        file_notes_exists = False
+    
     address_book = AddressBook()
     note_book = NotesBook([])
 
     if file_exists:
         address_book.load_from_file("contacts")
-        print("Data loaded from file.")
+        print("AdressBook data loaded from file.")
     else:
-        print("No data found in file. Creating a new one.")
+        print("No data found in AdressBook file. Creating a new one.")
+
+    if file_notes_exists:
+        note_book.load_from_file("notes")
+        print("NotesBook data loaded from file.")
+    else:
+        print("No data found in NotesBook file. Creating a new one.")
 
     while True:
         command = input("Enter a command: ").strip()
         if command in ["close", "exit"]:
             address_book.save_to_file("contacts")
+            note_book.save_to_file("notes")
             print("Good bye!")
             break
         elif command == "hello":

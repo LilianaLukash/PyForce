@@ -58,6 +58,14 @@ class NotesBook(UserList):
             print(f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}")
         if self == []:
             print("No notes")
+    
+    def save_to_file(self, filename):
+        with open(filename, "wb") as file:
+            pickle.dump(self.data, file)
+
+    def load_from_file(self, filename):
+        with open(filename, "rb") as file:
+            self.data = pickle.load(file)
 
 
 
