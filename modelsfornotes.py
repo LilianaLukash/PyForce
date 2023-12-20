@@ -10,8 +10,8 @@ class Field:
 class Notes(UserDict):
     def __init__(self, title, note, tags=None):
         super().__init__()
-        self.data['title'] = title
-        self.data['note'] = note
+        self.data['title'] = title.strip()
+        self.data['note'] = note.strip()
         self.data['tags'] = tags or []
 
     def addtag(self, tag):

@@ -121,24 +121,28 @@ def handle_notes_add(command, note_book):
 
 
 def handle_notes_edit(command, note_book):
-    _, title, new_text = command.split()
+    _, title, new_text = command.split(":")
     note_book.editbytitle(title, new_text)
 
 
 def handle_notes_remove(command, note_book):
-    _, title = command.split()
+    _, title = command.split(":")
     note_book.removenote(title)
 
 
 def handle_notes_find(command, note_book):
-    _, title = command.split()
+    _, title = command.split(":")
+    title = title.strip()
     note = note_book.searchbytitle(title)
-    print(
-        f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
-    )
+    if note:
+        print(
+            f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
+        )
+    else:
+        print("No such note")
 
 def handle_findbytag(command, note_book):
-    _, tag = command.split(" ", 1)
+    _, tag = command.split(":")
     found = note_book.searchbytag(tag)
     if found == []:
         print("No notes with this tag")
