@@ -13,8 +13,8 @@ def input_error(func):
             return str(e)
         except IndexError:
             return "Give me name and phone please."
-        # except TypeError:
-        #     return "Please use correct number of arguments"
+        except TypeError:
+            return "Please use correct number of arguments"
         except Exception as ex:
             print(f"Unexpected exception {ex}: in def {func.__name__}()")
 
@@ -34,7 +34,7 @@ def handle_add(command, address_book):
     address = input("Enter Address: ")
     birthday = input("Enter Birthday: ")
     email = input("Enter Email: ")
-    
+
     address = address or None
     birthday = birthday or None
     email = email or None
@@ -44,9 +44,9 @@ def handle_add(command, address_book):
 
 @input_error
 def handle_change(command, address_book):
-    _, name, phone = command.split()
+    _, name, old_phone, new_phone = command.split()
     record = address_book.find(name)
-    record.edit_phone(record.phones, phone)
+    record.edit_phone(old_phone, new_phone)
     return "Contact changed."
 
 
@@ -78,11 +78,13 @@ def handle_add_address(command, address_book):
     address_book.find(name).add_address(address)
     return f"Address added for {name}."
 
+
 @input_error
 def handle_add_birthday(command, address_book):
     _, name, birthday = command.split()
     address_book.find(name).add_birthday(birthday)
     return f"Birthday added for {name}."
+
 
 @input_error
 def handle_add_email(command, address_book):
@@ -99,13 +101,16 @@ def handle_show_birthday(command, address_book):
         return f"Birthday for {name}: {record.birthday.value}"
     else:
         return f"No birthday found for {name}."
-    
+
+
 def handle_notes_add(command, note_book):
     _, title, text = command.split()
     note_book.addnote(title, text)
-    tags_to_add = input('Note was added. Do you want to add tags? If yes, write separate by \",\", if not, put "n"')
+    tags_to_add = input(
+        'Note was added. Do you want to add tags? If yes, write separate by ",", if not, put "n"'
+    )
     if tags_to_add != "n":
-        tags = tags_to_add.split(',')
+        tags = tags_to_add.split(",")
         for newtag in tags:
             if note_to_edit := note_book.searchbytitle(title):
                 note_to_edit.addtag(newtag.strip())
@@ -113,18 +118,24 @@ def handle_notes_add(command, note_book):
             else:
                 print(f"Note with title'{title}' was not found")
 
+
 def handle_notes_edit(command, note_book):
     _, title, new_text = command.split()
     note_book.editbytitle(title, new_text)
 
-def handle_notes_remove(command, note_book) :
+
+def handle_notes_remove(command, note_book: NotesBook([])):
     _, title = command.split()
     note_book.removenote(title)
+
 
 def handle_notes_find(command, note_book):
     _, title = command.split()
     note = note_book.searchbytitle(title)
-    print(f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}")
+    print(
+        f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
+    )
+
 
 def main():
     try:
@@ -179,10 +190,10 @@ def main():
         elif command.startswith("notesedit"):
             handle_notes_edit(command, note_book)
         elif command.startswith("notesremove"):
-            handle_notes_remove(command, note_book)        
+            handle_notes_remove(command, note_book)
         elif command.startswith("notesfind"):
             handle_notes_find(command, note_book)
-        
+
         else:
             print("Invalid command. Try again.")
 

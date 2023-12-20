@@ -155,9 +155,9 @@ class Record:
         return self.email.value
 
     def __str__(self):
-        birthday = f" birthday: {str(self.birthday.value)} " if self.birthday else ""
-        address = f", address: {str(self.address.value)}, " if self.address else ""
-        email = f", email: {str(self.email.value)}, " if self.email else ""
+        birthday = f", birthday: {str(self.birthday.value)}" if self.birthday else ""
+        address = f", address: {str(self.address.value)}" if self.address else ""
+        email = f", email: {str(self.email.value)}" if self.email else ""
         phones = ",".join([f"{v.value}" for v in self.phones])
         return f"Contact name: {self.name.value}, phones: {phones}{birthday}{address}{email}"
 
@@ -166,12 +166,15 @@ class AddressBook:
     def __init__(self):
         self.data = {}
 
-    def add_record(self, name, phone, birthday=None, address=None, email=None):
+    def add_record(self, name, phone, address=None, birthday=None, email=None):
         if name in self.data:
             self.data[name].add_phone(phone)
-            self.data[name].add_birthday(birthday) if birthday else None
-            self.data[name].add_address(address) if birthday else None
-            self.data[name].add_email(email) if birthday else None
+            if address:
+                self.data[name].add_address(address)
+            if birthday:
+                self.data[name].add_birthday(birthday)
+            if email:
+                self.data[name].add_email(email)
         else:
             self.data[name] = Record(name, phone, address, birthday, email)
 
