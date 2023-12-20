@@ -67,7 +67,8 @@ def handle_delete(command, address_book):
 @input_error
 def handle_all(address_book):
     if address_book.data:
-        return "\n".join([f"{v}" for k, v in address_book.data.items()])
+        result = "All records:\n"
+        return result + "\n".join([f"{v}" for k, v in address_book.data.items()])
     else:
         return "Data is empty, nothing to show"
 
