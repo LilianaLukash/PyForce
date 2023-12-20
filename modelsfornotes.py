@@ -12,7 +12,7 @@ class Notes(UserDict):
         super().__init__()
         self.data['title'] = title
         self.data['note'] = note
-        self.data['tags'] = tags if tags else []
+        self.data['tags'] = tags or []
 
     def addtag(self, tag):
         self.data['tags'].append(tag) 

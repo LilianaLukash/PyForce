@@ -107,8 +107,7 @@ def handle_notes_add(command, note_book):
     if tags_to_add != "n":
         tags = tags_to_add.split(',')
         for newtag in tags:
-            note_to_edit = note_book.searchbytitle(title)
-            if note_to_edit:
+            if note_to_edit := note_book.searchbytitle(title):
                 note_to_edit.addtag(newtag.strip())
                 print("Added")
             else:
