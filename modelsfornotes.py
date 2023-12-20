@@ -18,6 +18,7 @@ class Notes(UserDict):
         self.data['tags'].append(tag) 
     
 class NotesBook(UserList): 
+    
     def __init__(self, *args):
         super().__init__(*args)
     
@@ -31,11 +32,12 @@ class NotesBook(UserList):
             if note.data['title'] == title:
                 return note
         return None
-
+   
     def removenote(self, title):
         note_to_remove = self.searchbytitle(title)
         if note_to_remove:
             self.remove(note_to_remove)
+            print("Note deleted")
 
     def searchbytag(self, tag):
         # Return list of notes with matching tags
@@ -49,7 +51,13 @@ class NotesBook(UserList):
         note_to_edit = self.searchbytitle(title)
         if note_to_edit is not None:
             note_to_edit.data['note'] = newnote
+            print("Text was changed")
 
+    def all(self):
+        for note in self:
+            print(f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}")
+        if self == []:
+            print("No notes")
 
 
 
