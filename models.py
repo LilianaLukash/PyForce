@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
 import pickle
+import re
 
 
 class Field:
@@ -9,8 +10,23 @@ class Field:
 
 
 class Name(Field):
-    def __init__(self, name):
+    def __init__(self, name: str):
+        if not self.is_valid(name):
+            raise ValueError("Invalid Name")
         super().__init__(name)
+
+    @staticmethod
+    def is_valid(name: str):
+        """
+        Check if a name is valid.
+
+        Args:
+            name (str): The name to be checked.
+
+        Returns:
+            bool: True if the name is valid, False otherwise."""
+
+        return name.strip() != ""
 
 
 class Phone(Field):
@@ -21,6 +37,15 @@ class Phone(Field):
 
     @staticmethod
     def is_valid(number):
+        """
+        Check if a phone number is valid.
+
+        Args:
+            number (str): The phone number to be checked.
+
+        Returns:
+            bool: True if the phone number is valid, False otherwise."""
+
         return len(number) == 10 and number.isdigit()
 
 
@@ -32,6 +57,15 @@ class Address(Field):
 
     @staticmethod
     def is_valid(address):
+        """
+        Check if an address is valid.
+
+        Args:
+            address (str): The address to be checked.
+
+        Returns:
+            bool: True if the address is valid, False otherwise."""
+
         try:
             address = str(address)
             return True
@@ -44,11 +78,22 @@ class Birthday(Field):
 
     def __init__(self, date):
         if not self.is_valid(date):
-            raise ValueError("Invalid birthday date. Birthday date must be <DD.MM.YYYY> format")
+            raise ValueError(
+                "Invalid birthday date. Birthday date must be <DD.MM.YYYY> format"
+            )
         super().__init__(date)
 
     @staticmethod
     def is_valid(date):
+        """
+        Check if a date is valid.
+
+        Args:
+            date (str): The date to be checked.
+
+        Returns:
+            bool: True if the date is valid, False otherwise."""
+
         try:
             datetime.strptime(date, Birthday.date_format)
             return True
@@ -64,11 +109,16 @@ class Email(Field):
 
     @staticmethod
     def is_valid(email):
-        try:
-            email = str(email)
-            return True
-        except ValueError:
-            return False
+        """
+        The function `is_valid` checks if an email address is valid based on a specific pattern.
+
+        :param email: The parameter `email` is a string that represents an email address
+        """
+
+        email_pattern = (
+            r"([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
+        )
+        return re.fullmatch(email_pattern, email) is not None
 
 
 class Record:
@@ -80,32 +130,94 @@ class Record:
         self.email = Email(email) if email else None
 
     def add_phone(self, phone):
+        """
+        Add a phone number to the object.
+        Args:
+            phone (str): The phone number to be added.
+        Raises:
+            ValueError: If the phone number is invalid.
+        Returns:
+            None
+        """
+
         if Phone.is_valid(phone):
             self.phones.add(Phone(phone))
         else:
-            raise ValueError("Invalid phone number. Phone number must be 10 digits young Jedi")
+            raise ValueError(
+                "Invalid phone number. Phone number must be 10 digits young Jedi"
+            )
 
     def add_address(self, address):
+        """
+        Add an address to the object.
+
+        Args:
+            address (str): The address to be added.
+
+        Raises:
+            ValueError: If the address is invalid.
+
+        Returns:
+            None"""
+
         if Address.is_valid(address):
             self.address = Address(address)
         else:
             raise ValueError("Invalid Address")
 
     def add_birthday(self, birthday):
+        """
+        Add a birthday to the object.
+
+        Args:
+            birthday (str): The birthday date to be added.
+
+        Raises:
+            ValueError: If the birthday date is invalid.
+
+        Returns:
+            None"""
+
         if not birthday:
             return
         if Birthday.is_valid(birthday):
             self.birthday = Birthday(birthday)
         else:
-            raise ValueError("Invalid birthday date. Birthday date must be <DD.MM.YYYY> format")
+            raise ValueError(
+                "Invalid birthday date. Birthday date must be <DD.MM.YYYY> format"
+            )
 
     def add_email(self, email):
+        """
+        Add an email address to the object.
+
+        Args:
+            email (str): The email address to be added.
+
+        Raises:
+            ValueError: If the email address is invalid.
+
+        Returns:
+            None"""
+
         if Email.is_valid(email):
             self.email = Email(email)
         else:
             raise ValueError("Invalid Email")
 
     def remove_phone(self, phone):
+        """
+        Remove a phone number from the object.
+
+        Args:
+            phone (str): The phone number to be removed.
+
+        Raises:
+            KeyError: If the phone number is not found.
+
+        Returns:
+            None"""
+
         for p in self.phones:
             if p.value == phone:
                 self.phones.remove(p)
@@ -114,6 +226,20 @@ class Record:
             raise KeyError("Phone number not found youn Jedi")
 
     def edit_phone(self, old_phone, new_phone):
+        """
+        Edit a phone number by replacing the old phone number with a new phone number.
+
+        Args:
+            old_phone (str): The old phone number to be replaced.
+            new_phone (str): The new phone number to replace the old phone number.
+
+        Raises:
+            ValueError: If the new phone number is invalid.
+            KeyError: If the old phone number is not found.
+
+        Returns:
+            None"""
+
         if not Phone.is_valid(new_phone):
             raise ValueError("Invalid new phone number. Phone must be 10 digits")
 
@@ -125,36 +251,90 @@ class Record:
             raise KeyError("Phone number not found young Jedi")
 
     def find_phone(self, phone):
+        """
+        Find a phone number in the object.
+
+        Args:
+            phone (str): The phone number to be found.
+
+        Raises:
+            KeyError: If the phone number is not found.
+
+        Returns:
+            Phone: The Phone object representing the found phone number."""
+
         for p in self.phones:
             if p.value == phone:
                 return p
         raise KeyError("Phone number not found")
 
-    def add_address(self, address: str):
-        self.address = Address(address)
-
-    def add_email(self, email: str):
-        self.email = Email(email)
-
     def edit_address(self, address: str):
+        """
+        Edit the address by adding a new address.
+
+        Args:
+            address (str): The new address to be added.
+
+        Returns:
+            None"""
+
         self.add_address(address)
 
     def edit_email(self, email: str):
+        """
+        Edit the email address by adding a new email.
+
+        Args:
+            email (str): The new email address to be added.
+
+        Returns:
+            None"""
+
         self.add_email(email)
 
     def get_phones(self):
+        """
+        Get the list of phone numbers associated with the object.
+
+        Returns:
+            list: A list of phone numbers."""
+
         return self.phones
 
     def get_birthday(self):
+        """
+        Get the birthday associated with the object.
+
+        Returns:
+            Birthday: The birthday of the object."""
+
         return self.birthday.value
 
     def get_address(self):
+        """
+        Get the address associated with the object.
+
+        Returns:
+            str: The address of the object."""
+
         return self.address.value
 
     def get_email(self):
+        """
+        Get the email address associated with the object.
+
+        Returns:
+            str: The email address of the object."""
+
         return self.email.value
 
     def __str__(self):
+        """
+        Return a string representation of the Contact object.
+
+        Returns:
+            str: The string representation of the Contact object."""
+
         birthday = f", birthday: {str(self.birthday.value)}" if self.birthday else ""
         address = f", address: {str(self.address.value)}" if self.address else ""
         email = f", email: {str(self.email.value)}" if self.email else ""
@@ -167,6 +347,19 @@ class AddressBook:
         self.data = {}
 
     def add_record(self, name, phone, address=None, birthday=None, email=None):
+        """
+        Add a record to the address book.
+
+        Args:
+            name (str): The name of the contact.
+            phone (str): The phone number of the contact.
+            address (str, optional): The address of the contact. Defaults to None.
+            birthday (str, optional): The birthday of the contact. Defaults to None.
+            email (str, optional): The email address of the contact. Defaults to None.
+
+        Returns:
+            None"""
+
         if name in self.data:
             self.data[name].add_phone(phone)
             if address:
@@ -179,29 +372,88 @@ class AddressBook:
             self.data[name] = Record(name, phone, address, birthday, email)
 
     def count_records(self):
+        """
+        Count the number of records in the object.
+
+        Returns:
+            int: The number of records."""
+
         return len(self.data)
 
     def find(self, name):
+        """
+        Find a record by name in the object.
+
+        Args:
+            name (str): The name of the record to find.
+
+        Raises:
+            KeyError: If the record with the given name is not found.
+
+        Returns:
+            Record: The found record."""
+
         if name in self.data:
             return self.data[name]
         else:
             raise KeyError("Name not found. Enter <?> to find out all comands")
 
     def delete(self, name):
+        """
+        Delete a record by name from the object.
+
+        Args:
+            name (str): The name of the record to delete.
+
+        Raises:
+            KeyError: If the record with the given name is not found.
+
+        Returns:
+            None"""
+
         if name in self.data:
             del self.data[name]
         else:
-            raise KeyError("Name not found young Jedi. Enter <?> to faind out all comands")
+            raise KeyError(
+                "Name not found young Jedi. Enter <?> to faind out all comands"
+            )
 
     def save_to_file(self, filename):
+        """
+        Save the object to a file.
+
+        Args:
+            filename (str): The name of the file to save the object to.
+
+        Returns:
+            None"""
+
         with open(filename, "wb") as file:
             pickle.dump(self.data, file)
 
     def load_from_file(self, filename):
+        """
+        Load data from a file and update the object.
+
+        Args:
+            filename (str): The name of the file to load data from.
+
+        Returns:
+            None"""
+
         with open(filename, "rb") as file:
             self.data = pickle.load(file)
 
     def get_birthdays_per_week(self):
+        """
+        Get upcoming birthdays per week from the address book.
+
+        Returns:
+            dict: A dictionary mapping days of the week (0-6)
+            to a list of tuples containing the names and birthday dates
+            of contacts with upcoming birthdays.
+        """
+
         today = datetime.now().date()
         next_week = today + timedelta(days=7)
         upcoming_birthdays = {day: [] for day in range(7)}
@@ -238,7 +490,9 @@ def handle_all_birthdays(address_book, num_of_days=7):
                     birthdays_by_date[future_date].append(name)
 
     while birthdays_by_date:
-        upcoming_dates = [today + timedelta(days=day_offset) for day_offset in range(num_of_days)]
+        upcoming_dates = [
+            today + timedelta(days=day_offset) for day_offset in range(num_of_days)
+        ]
 
         for day in upcoming_dates:
             day_of_week = day.strftime("%A")
