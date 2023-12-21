@@ -67,10 +67,17 @@ def handle_delete(command, address_book):
 @input_error
 def handle_all(address_book):
     if address_book.data:
-        result = "All records:\n"
+        result = f"All records ({address_book.count_records()}):\n"
         return result + "\n".join([f"{v}" for k, v in address_book.data.items()])
     else:
         return "Data is empty, nothing to show"
+
+
+@input_error
+def handle_add_phone(command, address_book):
+    _, name, phone = command.split()
+    address_book.find(name).add_phone(phone)
+    return f"Phone added for {name}."
 
 
 @input_error
@@ -105,7 +112,7 @@ def handle_show_birthday(command, address_book):
 
 
 def handle_notes_add(command, note_book):
-    _, title, text = command.split()
+    _, title, text = command.split(":")
     note_book.addnote(title, text)
     tags_to_add = input(
         'Note was added. Do you want to add tags? If yes, write separate by ",", if not, put "n"'
@@ -121,18 +128,41 @@ def handle_notes_add(command, note_book):
 
 
 def handle_notes_edit(command, note_book):
-    _, title, new_text = command.split()
+    _, title, new_text = command.split(":")
     note_book.editbytitle(title, new_text)
 
 
 def handle_notes_remove(command, note_book):
-    _, title = command.split()
+    _, title = command.split(":")
     note_book.removenote(title)
 
 
 def handle_notes_find(command, note_book):
-    _, title = command.split()
+    _, title = command.split(":")
+    title = title.strip()
     note = note_book.searchbytitle(title)
+    if note:
+        print(
+            f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
+        )
+    else:
+        print("No such note")
+
+def handle_findbytag(command, note_book):
+    _, tag = command.split(":")
+    found = note_book.searchbytag(tag)
+    if found == []:
+        print("No notes with this tag")
+    else:
+        for note in found:
+            print(
+        f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
+    )
+
+def handle_addtag(command, note_book):
+    _, title, tag = command.split(":")
+    note = note_book.searchbytitle(title)
+    note.addtag(tag)
     print(
         f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
     )
@@ -146,19 +176,33 @@ def main():
     except FileNotFoundError:
         file_exists = False
 
+    try:
+        with open("notes", "rb"):
+            pass
+        file_notes_exists = True
+    except FileNotFoundError:
+        file_notes_exists = False
+    
     address_book = AddressBook()
     note_book = NotesBook([])
 
     if file_exists:
         address_book.load_from_file("contacts")
-        print("Data loaded from file.")
+        print("AdressBook data loaded from file.")
     else:
-        print("No data found in file. Creating a new one.")
+        print("No data found in AdressBook file. Creating a new one.")
+
+    if file_notes_exists:
+        note_book.load_from_file("notes")
+        print("NotesBook data loaded from file.")
+    else:
+        print("No data found in NotesBook file. Creating a new one.")
 
     while True:
         command = input("Enter a command: ").strip()
         if command in ["close", "exit"]:
             address_book.save_to_file("contacts")
+            note_book.save_to_file("notes")
             print("Good bye!")
             break
         elif command == "hello":
@@ -181,10 +225,12 @@ def main():
             print(handle_add_address(command, address_book))
         elif command.startswith("add-email"):
             print(handle_add_email(command, address_book))
+        elif command.startswith("add-phone"):
+            print(handle_add_phone(command, address_book))
         elif command == "birthdays":
             handle_all_birthdays(address_book)
         elif command.startswith("noteadd"):
-            print("hi")
+
             handle_notes_add(command, note_book)
         elif command.startswith("notesall"):
             note_book.all()
@@ -194,6 +240,10 @@ def main():
             handle_notes_remove(command, note_book)
         elif command.startswith("notesfind"):
             handle_notes_find(command, note_book)
+        elif command.startswith("findbytag"):
+            handle_findbytag(command, note_book)
+        elif command.startswith("addtag"):
+            handle_addtag(command, note_book)
 
         else:
             print("Invalid command. Try again.")
