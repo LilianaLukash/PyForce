@@ -146,13 +146,13 @@ class Record:
         return self.phones
 
     def get_birthday(self):
-        return self.birthday.value
+        return self.birthday.value if self.birthday else "None"
 
     def get_address(self):
-        return self.address.value
-
+        return self.address.value if self.address else "None"
+            
     def get_email(self):
-        return self.email.value
+        return self.email.value if self.email else "None"
 
     def __str__(self):
         birthday = f", birthday: {str(self.birthday.value)}" if self.birthday else ""
@@ -186,6 +186,19 @@ class AddressBook:
             return self.data[name]
         else:
             raise KeyError("Name not found. Enter <?> to find out all comands")
+    
+    def find_by_criteria(self, criteria):
+        records = []
+        for name, record in self.data.items():
+            sourcestring = name + ''.join(str(s.value) for s in record.get_phones()) + record.get_address() + record.get_birthday() + record.get_email() 
+            if criteria in sourcestring:
+                birthday = f", birthday: {str(record.get_birthday())}"
+                address = f", address: {str(record.get_address())}" 
+                email = f", email: {str(record.get_email())}"
+                phones = ",".join([f"{v.value}" for v in record.get_phones()])
+                targetstring = f"Contact name: {name}, phones: {phones}{birthday}{address}{email}"
+                records.append(targetstring)
+        return records
 
     def delete(self, name):
         if name in self.data:
