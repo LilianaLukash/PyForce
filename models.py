@@ -17,6 +17,15 @@ class Name(Field):
 
     @staticmethod
     def is_valid(name: str):
+        """
+        Check if a name is valid.
+
+        Args:
+            name (str): The name to be checked.
+
+        Returns:
+            bool: True if the name is valid, False otherwise."""
+
         return name.strip() != ""
 
 
@@ -69,7 +78,9 @@ class Birthday(Field):
 
     def __init__(self, date):
         if not self.is_valid(date):
-            raise ValueError("Invalid birthday date. Birthday date must be <DD.MM.YYYY> format")
+            raise ValueError(
+                "Invalid birthday date. Birthday date must be <DD.MM.YYYY> format"
+            )
         super().__init__(date)
 
     @staticmethod
@@ -132,7 +143,9 @@ class Record:
         if Phone.is_valid(phone):
             self.phones.add(Phone(phone))
         else:
-            raise ValueError("Invalid phone number. Phone number must be 10 digits young Jedi")
+            raise ValueError(
+                "Invalid phone number. Phone number must be 10 digits young Jedi"
+            )
 
     def add_address(self, address):
         """
@@ -170,7 +183,9 @@ class Record:
         if Birthday.is_valid(birthday):
             self.birthday = Birthday(birthday)
         else:
-            raise ValueError("Invalid birthday date. Birthday date must be <DD.MM.YYYY> format")
+            raise ValueError(
+                "Invalid birthday date. Birthday date must be <DD.MM.YYYY> format"
+            )
 
     def add_email(self, email):
         """
@@ -399,7 +414,9 @@ class AddressBook:
         if name in self.data:
             del self.data[name]
         else:
-            raise KeyError("Name not found young Jedi. Enter <?> to faind out all comands")
+            raise KeyError(
+                "Name not found young Jedi. Enter <?> to faind out all comands"
+            )
 
     def save_to_file(self, filename):
         """
@@ -473,7 +490,9 @@ def handle_all_birthdays(address_book, num_of_days=7):
                     birthdays_by_date[future_date].append(name)
 
     while birthdays_by_date:
-        upcoming_dates = [today + timedelta(days=day_offset) for day_offset in range(num_of_days)]
+        upcoming_dates = [
+            today + timedelta(days=day_offset) for day_offset in range(num_of_days)
+        ]
 
         for day in upcoming_dates:
             day_of_week = day.strftime("%A")
