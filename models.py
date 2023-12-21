@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime, timedelta
 import pickle
+import re
 
 
 class Field:
@@ -92,19 +93,15 @@ class Email(Field):
     @staticmethod
     def is_valid(email):
         """
-        Check if an email address is valid.
+        The function `is_valid` checks if an email address is valid based on a specific pattern.
 
-        Args:
-            email (str): The email address to be checked.
+        :param email: The parameter `email` is a string that represents an email address
+        """
 
-        Returns:
-            bool: True if the email address is valid, False otherwise."""
-
-        try:
-            email = str(email)
-            return True
-        except ValueError:
-            return False
+        email_pattern = (
+            r"([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
+        )
+        return re.fullmatch(email_pattern, email) is not None
 
 
 class Record:
