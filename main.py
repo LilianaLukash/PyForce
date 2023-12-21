@@ -140,8 +140,7 @@ def handle_notes_remove(command, note_book):
 def handle_notes_find(command, note_book):
     _, title = command.split(":")
     title = title.strip()
-    note = note_book.searchbytitle(title)
-    if note:
+    if note := note_book.searchbytitle(title):
         print(
             f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
         )
@@ -188,9 +187,9 @@ def main():
 
     if file_exists:
         address_book.load_from_file("contacts")
-        print("AdressBook data loaded from file.")
+        print("AddressBook data loaded from file.")
     else:
-        print("No data found in AdressBook file. Creating a new one.")
+        print("No data found in AddressBook file. Creating a new one.")
 
     if file_notes_exists:
         note_book.load_from_file("notes")
