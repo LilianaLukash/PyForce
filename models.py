@@ -16,7 +16,7 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, number):
         if not self.is_valid(number):
-            raise ValueError("Invalid phone number")
+            raise ValueError("Invalid phone number. Phone number must be 10 digits")
         super().__init__(number)
 
     @staticmethod
@@ -44,7 +44,7 @@ class Birthday(Field):
 
     def __init__(self, date):
         if not self.is_valid(date):
-            raise ValueError("Invalid birthday date")
+            raise ValueError("Invalid birthday date. Birthday date must be <DD.MM.YYYY> format")
         super().__init__(date)
 
     @staticmethod
@@ -83,7 +83,7 @@ class Record:
         if Phone.is_valid(phone):
             self.phones.add(Phone(phone))
         else:
-            raise ValueError("Invalid phone number")
+            raise ValueError("Invalid phone number. Phone number must be 10 digits young Jedi")
 
     def add_address(self, address):
         if Address.is_valid(address):
@@ -97,7 +97,7 @@ class Record:
         if Birthday.is_valid(birthday):
             self.birthday = Birthday(birthday)
         else:
-            raise ValueError("Invalid birthday date")
+            raise ValueError("Invalid birthday date. Birthday date must be <DD.MM.YYYY> format")
 
     def add_email(self, email):
         if Email.is_valid(email):
@@ -111,18 +111,18 @@ class Record:
                 self.phones.remove(p)
                 break
         else:
-            raise KeyError("Phone number not found")
+            raise KeyError("Phone number not found youn Jedi")
 
     def edit_phone(self, old_phone, new_phone):
         if not Phone.is_valid(new_phone):
-            raise ValueError("Invalid new phone number")
+            raise ValueError("Invalid new phone number. Phone must be 10 digits")
 
         for p in self.phones:
             if p.value == old_phone:
                 p.value = new_phone
                 break
         else:
-            raise KeyError("Phone number not found")
+            raise KeyError("Phone number not found young Jedi")
 
     def find_phone(self, phone):
         for p in self.phones:
@@ -185,13 +185,13 @@ class AddressBook:
         if name in self.data:
             return self.data[name]
         else:
-            raise KeyError("Name not found")
+            raise KeyError("Name not found. Enter <?> to find out all comands")
 
     def delete(self, name):
         if name in self.data:
             del self.data[name]
         else:
-            raise KeyError("Name not found")
+            raise KeyError("Name not found young Jedi. Enter <?> to faind out all comands")
 
     def save_to_file(self, filename):
         with open(filename, "wb") as file:
@@ -220,7 +220,7 @@ class AddressBook:
         return upcoming_birthdays
 
 
-def handle_all_birthdays(address_book):
+def handle_all_birthdays(address_book, num_of_days=7):
     birthdays_by_date = defaultdict(list)
 
     today = datetime.now().date()
@@ -229,7 +229,7 @@ def handle_all_birthdays(address_book):
         if record.birthday:
             birthday_date = datetime.strptime(record.birthday.value, "%d.%m.%Y").date()
 
-            for i in range(7):
+            for i in range(num_of_days):
                 future_date = today + timedelta(days=i)
                 if (
                     birthday_date.day == future_date.day
@@ -238,7 +238,7 @@ def handle_all_birthdays(address_book):
                     birthdays_by_date[future_date].append(name)
 
     while birthdays_by_date:
-        upcoming_dates = [today + timedelta(days=day_offset) for day_offset in range(7)]
+        upcoming_dates = [today + timedelta(days=day_offset) for day_offset in range(num_of_days)]
 
         for day in upcoming_dates:
             day_of_week = day.strftime("%A")
@@ -246,7 +246,7 @@ def handle_all_birthdays(address_book):
                 names = [name.capitalize() for name in names]
                 if day_of_week == "Saturday":
                     day_of_week = "Monday"
-                print(f"{day_of_week}: {', '.join(names)}")
+                print(f"{day_of_week} ({day.strftime('%d-%m')}): {', '.join(names)}")
 
             if day in birthdays_by_date:
                 del birthdays_by_date[day]
