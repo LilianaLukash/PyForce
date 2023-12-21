@@ -8,6 +8,11 @@ class Field:
         self.value = value
 
 
+class Name(Field):
+    def __init__(self, name):
+        super().__init__(name)
+
+
 class Phone(Field):
     def __init__(self, number):
         if not self.is_valid(number):
@@ -19,12 +24,24 @@ class Phone(Field):
         return len(number) == 10 and number.isdigit()
 
 
-class Name(Field):
-    def __init__(self, name):
-        super().__init__(name)
+class Address(Field):
+    def __init__(self, address):
+        if not self.is_valid(address):
+            raise ValueError("Invalid Address")
+        super().__init__(address)
+
+    @staticmethod
+    def is_valid(address):
+        try:
+            address = str(address)
+            return True
+        except ValueError:
+            return False
 
 
 class Birthday(Field):
+    date_format = "%d.%m.%Y"
+
     def __init__(self, date):
         if not self.is_valid(date):
             raise ValueError("Invalid birthday date. Birthday date must be <DD.MM.YYYY> format")
@@ -33,23 +50,46 @@ class Birthday(Field):
     @staticmethod
     def is_valid(date):
         try:
-            datetime.strptime(date, "%d.%m.%Y")
+            datetime.strptime(date, Birthday.date_format)
+            return True
+        except ValueError:
+            return False
+
+
+class Email(Field):
+    def __init__(self, email):
+        if not self.is_valid(email):
+            raise ValueError("Invalid Email")
+        super().__init__(email)
+
+    @staticmethod
+    def is_valid(email):
+        try:
+            email = str(email)
             return True
         except ValueError:
             return False
 
 
 class Record:
-    def __init__(self, name, phone, birthday=None):
+    def __init__(self, name, phone, address=None, birthday=None, email=None):
         self.name = Name(name)
-        self.phones = [Phone(phone)]
+        self.phones = {Phone(phone)}
+        self.address = Address(address) if address else None
         self.birthday = Birthday(birthday) if birthday else None
+        self.email = Email(email) if email else None
 
     def add_phone(self, phone):
         if Phone.is_valid(phone):
-            self.phones.append(Phone(phone))
+            self.phones.add(Phone(phone))
         else:
             raise ValueError("Invalid phone number. Phone number must be 10 digits young Jedi")
+
+    def add_address(self, address):
+        if Address.is_valid(address):
+            self.address = Address(address)
+        else:
+            raise ValueError("Invalid Address")
 
     def add_birthday(self, birthday):
         if not birthday:
@@ -58,6 +98,12 @@ class Record:
             self.birthday = Birthday(birthday)
         else:
             raise ValueError("Invalid birthday date. Birthday date must be <DD.MM.YYYY> format")
+
+    def add_email(self, email):
+        if Email.is_valid(email):
+            self.email = Email(email)
+        else:
+            raise ValueError("Invalid Email")
 
     def remove_phone(self, phone):
         for p in self.phones:
@@ -84,17 +130,53 @@ class Record:
                 return p
         raise KeyError("Phone number not found")
 
+    def add_address(self, address: str):
+        self.address = Address(address)
+
+    def add_email(self, email: str):
+        self.email = Email(email)
+
+    def edit_address(self, address: str):
+        self.add_address(address)
+
+    def edit_email(self, email: str):
+        self.add_email(email)
+
+    def get_phones(self):
+        return self.phones
+
+    def get_birthday(self):
+        return self.birthday.value
+
+    def get_address(self):
+        return self.address.value
+
+    def get_email(self):
+        return self.email.value
+
+    def __str__(self):
+        birthday = f", birthday: {str(self.birthday.value)}" if self.birthday else ""
+        address = f", address: {str(self.address.value)}" if self.address else ""
+        email = f", email: {str(self.email.value)}" if self.email else ""
+        phones = ",".join([f"{v.value}" for v in self.phones])
+        return f"Contact name: {self.name.value}, phones: {phones}{birthday}{address}{email}"
+
 
 class AddressBook:
     def __init__(self):
         self.data = {}
 
-    def add_record(self, name, phone, birthday=None):
+    def add_record(self, name, phone, address=None, birthday=None, email=None):
         if name in self.data:
             self.data[name].add_phone(phone)
-            self.data[name].add_birthday(birthday)
+            if address:
+                self.data[name].add_address(address)
+            if birthday:
+                self.data[name].add_birthday(birthday)
+            if email:
+                self.data[name].add_email(email)
         else:
-            self.data[name] = Record(name, phone, birthday)
+            self.data[name] = Record(name, phone, address, birthday, email)
 
     def count_records(self):
         return len(self.data)
