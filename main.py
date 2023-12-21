@@ -67,10 +67,17 @@ def handle_delete(command, address_book):
 @input_error
 def handle_all(address_book):
     if address_book.data:
-        result = "All records:\n"
+        result = f"All records ({address_book.count_records()}):\n"
         return result + "\n".join([f"{v}" for k, v in address_book.data.items()])
     else:
         return "Data is empty, nothing to show"
+
+
+@input_error
+def handle_add_phone(command, address_book):
+    _, name, phone = command.split()
+    address_book.find(name).add_phone(phone)
+    return f"Phone added for {name}."
 
 
 @input_error
@@ -181,6 +188,8 @@ def main():
             print(handle_add_address(command, address_book))
         elif command.startswith("add-email"):
             print(handle_add_email(command, address_book))
+        elif command.startswith("add-phone"):
+            print(handle_add_phone(command, address_book))
         elif command == "birthdays":
             handle_all_birthdays(address_book)
         elif command.startswith("noteadd"):
