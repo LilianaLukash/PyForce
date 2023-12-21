@@ -29,10 +29,26 @@ def handle_hello():
 @input_error
 def handle_add(command, address_book):
     _ = command.split()
-    name = input("Enter Name: ")
-    phone = input("Enter Phone: ")
+    while True:
+        name = input("Enter Name: ")
+        if name == "close":
+            return "Exited to main menu"
+        if not Name.is_valid(name):
+            print("Please use valid name, or type 'close' to exit in main menu")
+        else:
+            break
+
+    while True:
+        phone = input("Enter Phone: ")
+        if phone == "close":
+            return "Exited to main menu"
+        if not Phone.is_valid(phone):
+            print("Please use valid phone number, or 'close' to exit in main menu")
+        else:
+            break
+
     address = input("Enter Address: ")
-    birthday = input("Enter Birthday: ")
+    birthday = input("Enter Birthday in DD.MM.YYYY format: ")
     email = input("Enter Email: ")
 
     address = address or None
@@ -147,6 +163,7 @@ def handle_notes_find(command, note_book):
     else:
         print("No such note")
 
+
 def handle_findbytag(command, note_book):
     _, tag = command.split(":")
     found = note_book.searchbytag(tag)
@@ -155,8 +172,9 @@ def handle_findbytag(command, note_book):
     else:
         for note in found:
             print(
-        f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
-    )
+                f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
+            )
+
 
 def handle_addtag(command, note_book):
     _, title, tag = command.split(":")
@@ -181,7 +199,7 @@ def main():
         file_notes_exists = True
     except FileNotFoundError:
         file_notes_exists = False
-    
+
     address_book = AddressBook()
     note_book = NotesBook([])
 
@@ -229,7 +247,6 @@ def main():
         elif command == "birthdays":
             handle_all_birthdays(address_book)
         elif command.startswith("noteadd"):
-
             handle_notes_add(command, note_book)
         elif command.startswith("notesall"):
             note_book.all()

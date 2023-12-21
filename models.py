@@ -10,8 +10,14 @@ class Field:
 
 
 class Name(Field):
-    def __init__(self, name):
+    def __init__(self, name: str):
+        if not self.is_valid(name):
+            raise ValueError("Invalid Name")
         super().__init__(name)
+
+    @staticmethod
+    def is_valid(name: str):
+        return name.strip() != ""
 
 
 class Phone(Field):
