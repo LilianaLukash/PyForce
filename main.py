@@ -35,7 +35,7 @@ def input_error(func):
         except KeyError:
             return "Enter user name."
         except ValueError as e:
-            return f"{str(e)}enter <?> to find out about all commands"
+            return f"{str(e)}. Enter <?> to find out about all commands"
         except IndexError:
             return "Give me name and phone please."
         except TypeError:
