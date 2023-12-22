@@ -2,7 +2,7 @@ from models import *
 from datetime import datetime
 from modelsfornotes import *
 
-LOGO = r"""
+LOGO_VADER = r"""
                        .-.
                       |_:_|
                      /(_Y_)\
@@ -27,6 +27,30 @@ LOGO = r"""
                          '-'
 """
 
+LOGO_C3PO = r"""
+          ___
+         /---\
+        | @ @:|
+        |  " :|
+         \_-_/
+       _.d._.b.__
+   +"i\  |\_/|  /i"+
+   [_| \ |   | / |_]
+  .' |  ):===:(  | `.
+  |:.'+-" | | "-+`.:|
+  |_| |-. |_|   | |_|
+  \:\ |-' /+\   ! |:|
+   \ \|n._\+/_.n| / /
+    \XT::::-::::T/ /
+     "l-. `"' .-lXX
+      |: \   / :|
+      |:  i-i  :|
+      |:  | |  :| 
+      |:  | |  :|
+     \|;_ | |__;|/
+      (__() ()__) 
+      |:  | |  :|      
+"""
 
 def input_error(func):
     def wrapper(*args, **kwargs):
@@ -163,24 +187,20 @@ def handle_show_birthday(command, address_book):
 
 
 def print_supported_commands():
+    print(f"{LOGO_C3PO}\n"
+      "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
+      "'add-email <name> <phone> <email>' to add an e-mail\n"
+      "'add-birthday <name> <DD.MM.YYYY>'\n"
+      "'add-phone <name> <phone> <note>' to add note you must\n"
+      "'change <name> <new phone>' to change contact\n"
+      "'phone-name' to see a phone and a name input\n"
+      "'delete' <name> <phone> to delete contact\n"
+      "'birthdays' to see upcoming birthdays for the next 7 days\n"
+      "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
+      "'all' to see all the addressbook\n"
+      "'close' to end the assistant")
 
-    print(
-        f"{LOGO}\n"
-        "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
-        "'add-email <name> <phone> <email>' to add an e-mail\n"
-        "'add-birthday <name> <DD.MM.YYYY>'\n"
-        "'add-phone <name> <phone> <note>' to add note you must\n"
-        "'change <name> <new phone>' to change contact\n"
-        "'phone-name' to see a phone and a name input\n"
-        "'findall <criteria>' to find contact by user criteria (enter min. 3 symbols for criteria)\n"
-        "'delete' <name> <phone> to delete contact\n"
-        "'birthdays' to see upcoming birthdays for the next 7 days\n"
-        "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
-        "'all' to see all the addressbook\n"
-        "'close' to end the assistant"
-    )
 
-    
 def handle_notes_add(command, note_book):
     _, title, text = command.split(":")
     note_book.addnote(title, text)
@@ -271,9 +291,9 @@ def main():
 
     while True:
         command = input("Enter a command: ").strip()
-        if command in ["close", "exit", "end"]:
+        if command in ["close", "exit", "end", "bye"]:
             address_book.save_to_file("contacts")
-            print("Good bye! May the Force be with you!")
+            print(f"{LOGO_VADER}\nGood bye! May the Force be with you!")
             note_book.save_to_file("notes")
             print("Good bye!")
             break

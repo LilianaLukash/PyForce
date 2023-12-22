@@ -32,7 +32,7 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, number):
         if not self.is_valid(number):
-            raise ValueError("Invalid phone number. Phone number must be 10 digits")
+            raise ValueError("Invalid phone number. Phone number must be 10 digits young Padawan")
         super().__init__(number)
 
     @staticmethod
@@ -52,7 +52,7 @@ class Phone(Field):
 class Address(Field):
     def __init__(self, address):
         if not self.is_valid(address):
-            raise ValueError("Invalid Address")
+            raise ValueError("Invalid Address young Padawan")
         super().__init__(address)
 
     @staticmethod
@@ -104,7 +104,7 @@ class Birthday(Field):
 class Email(Field):
     def __init__(self, email):
         if not self.is_valid(email):
-            raise ValueError("Invalid Email")
+            raise ValueError("Invalid Email. Do or do not. There is no try")
         super().__init__(email)
 
     @staticmethod
@@ -163,7 +163,7 @@ class Record:
         if Address.is_valid(address):
             self.address = Address(address)
         else:
-            raise ValueError("Invalid Address")
+            raise ValueError("Invalid Address young Padawan")
 
     def add_birthday(self, birthday):
         """
@@ -203,7 +203,7 @@ class Record:
         if Email.is_valid(email):
             self.email = Email(email)
         else:
-            raise ValueError("Invalid Email")
+            raise ValueError("Invalid Email. Do or do not. There is no try")
 
     def remove_phone(self, phone):
         """
@@ -241,14 +241,14 @@ class Record:
             None"""
 
         if not Phone.is_valid(new_phone):
-            raise ValueError("Invalid new phone number. Phone must be 10 digits")
+            raise ValueError("Invalid new phone number. Phone must be 10 digits young Jedi")
 
         for p in self.phones:
             if p.value == old_phone:
                 p.value = new_phone
                 break
         else:
-            raise KeyError("Phone number not found young Jedi")
+            raise KeyError("Phone number not found young Jedi. I've got a bad feeling about this")
 
     def find_phone(self, phone):
         """
@@ -266,7 +266,7 @@ class Record:
         for p in self.phones:
             if p.value == phone:
                 return p
-        raise KeyError("Phone number not found")
+        raise KeyError("Phone number not found. I've got a bad feeling about this")
 
     def edit_address(self, address: str):
         """
@@ -399,7 +399,7 @@ class AddressBook:
         if name in self.data:
             return self.data[name]
         else:
-            raise KeyError("Name not found. Enter <?> to find out all comands")
+            raise KeyError("Name not found young Jedi. Enter <?> to find out all commands")
     
     def find_by_criteria(self, criteria):
         records = []
@@ -430,9 +430,7 @@ class AddressBook:
         if name in self.data:
             del self.data[name]
         else:
-            raise KeyError(
-                "Name not found young Jedi. Enter <?> to faind out all comands"
-            )
+            raise KeyError("Name not found young Jedi. Enter <?> to find out all commands")
 
     def save_to_file(self, filename):
         """
@@ -520,3 +518,6 @@ def handle_all_birthdays(address_book, num_of_days=7):
 
             if day in birthdays_by_date:
                 del birthdays_by_date[day]
+
+    if not birthdays_by_date:
+        print(f"No birthdays in the next {num_of_days} days young Jedi.")
