@@ -300,33 +300,36 @@ class Record:
             list: A list of phone numbers."""
 
         return self.phones
+      
 
-    def get_birthday(self):
+    def get_birthday(self):      
         """
         Get the birthday associated with the object.
 
         Returns:
-            Birthday: The birthday of the object."""
-
-        return self.birthday.value
+            Birthday or None: The birthday of the object, or None if not set."""
+        
+        return self.birthday.value if self.birthday else None
 
     def get_address(self):
         """
         Get the address associated with the object.
 
         Returns:
-            str: The address of the object."""
-
-        return self.address.value
+            str or None: The address of the object, or None if not set."""
+        
+        return self.address.value if self.address else None
 
     def get_email(self):
         """
         Get the email address associated with the object.
 
         Returns:
-            str: The email address of the object."""
+            str or None: The email address of the object, or None if not set."""
+        
+        return self.email.value if self.email else None
 
-        return self.email.value
+
 
     def __str__(self):
         """
@@ -397,6 +400,19 @@ class AddressBook:
             return self.data[name]
         else:
             raise KeyError("Name not found. Enter <?> to find out all comands")
+    
+    def find_by_criteria(self, criteria):
+        records = []
+        for name, record in self.data.items():
+            sourcestring = name + ''.join(str(s.value) for s in record.get_phones()) + record.get_address() + record.get_birthday() + record.get_email() 
+            if criteria in sourcestring:
+                birthday = f", birthday: {str(record.get_birthday())}"
+                address = f", address: {str(record.get_address())}" 
+                email = f", email: {str(record.get_email())}"
+                phones = ",".join([f"{v.value}" for v in record.get_phones()])
+                targetstring = f"Contact name: {name}, phones: {phones}{birthday}{address}{email}"
+                records.append(targetstring)
+        return records
 
     def delete(self, name):
         """

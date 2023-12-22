@@ -143,6 +143,16 @@ def handle_add_email(command, address_book):
 
 
 @input_error
+def handle_find_by_criteria(command, address_book):
+    _, criteria = command.split()
+    if len(criteria) < 3:
+        return "Please enter min. 3 symbols for search criteria"
+    records = address_book.find_by_criteria(criteria)
+    result = f"Found {len(records)} record(s) for criteria - {criteria} :\n"
+    return result + f"{'\n'.join(s for s in records)}"
+
+
+@input_error
 def handle_show_birthday(command, address_book):
     _, name = command.split()
     record = address_book.find(name)
@@ -153,6 +163,7 @@ def handle_show_birthday(command, address_book):
 
 
 def print_supported_commands():
+
     print(
         f"{LOGO}\n"
         "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
@@ -161,6 +172,7 @@ def print_supported_commands():
         "'add-phone <name> <phone> <note>' to add note you must\n"
         "'change <name> <new phone>' to change contact\n"
         "'phone-name' to see a phone and a name input\n"
+        "'findall <criteria>' to find contact by user criteria (enter min. 3 symbols for criteria)\n"
         "'delete' <name> <phone> to delete contact\n"
         "'birthdays' to see upcoming birthdays for the next 7 days\n"
         "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
@@ -168,7 +180,7 @@ def print_supported_commands():
         "'close' to end the assistant"
     )
 
-
+    
 def handle_notes_add(command, note_book):
     _, title, text = command.split(":")
     note_book.addnote(title, text)
@@ -304,6 +316,8 @@ def main():
             print(handle_add_email(command, address_book))
         elif command.startswith("add-phone"):
             print(handle_add_phone(command, address_book))
+        elif command.startswith("findall"):
+            print(handle_find_by_criteria(command, address_book))
         elif command == "birthdays":
             handle_all_birthdays(address_book)
         elif command.startswith("noteadd"):
