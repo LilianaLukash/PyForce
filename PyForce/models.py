@@ -309,7 +309,7 @@ class Record:
         Returns:
             Birthday or None: The birthday of the object, or None if not set."""
         
-        return self.birthday.value if self.birthday else None
+        return self.birthday.value if self.birthday else "None"
 
     def get_address(self):
         """
@@ -318,7 +318,7 @@ class Record:
         Returns:
             str or None: The address of the object, or None if not set."""
         
-        return self.address.value if self.address else None
+        return self.address.value if self.address else "None"
 
     def get_email(self):
         """
@@ -327,7 +327,7 @@ class Record:
         Returns:
             str or None: The email address of the object, or None if not set."""
         
-        return self.email.value if self.email else None
+        return self.email.value if self.email else "None"
 
 
 
