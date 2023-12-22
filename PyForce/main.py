@@ -27,6 +27,31 @@ LOGO = r"""
                          '-'
 """
 
+logo_2 = r"""
+          ___
+         /---\
+        | @ @:|
+        |  " :|
+         \_-_/
+       _.d._.b.__
+   +"i\  |\_/|  /i"+
+   [_| \ |   | / |_]
+  .' |  ):===:(  | `.
+  |:.'+-" | | "-+`.:|
+  |_| |-. |_|   | |_|
+  \:\ |-' /+\   ! |:|
+   \ \|n._\+/_.n| / /
+    \XT::::-::::T/ /
+     "l-. `"' .-lXX
+      |: \   / :|
+      |:  i-i  :|
+      |:  | |  :| 
+      |:  | |  :|
+     \|;_ | |__;|/
+      (__() ()__) 
+      |:  | |  :|      
+"""
+
 def input_error(func):
     def wrapper(*args, **kwargs):
         try:
@@ -130,7 +155,8 @@ def handle_show_birthday(command, address_book):
         return f"No birthday found for {name}."
 
 def print_supported_commands():
-    print(f"{LOGO}\n"
+    # f"{logo_2}\n"
+    print(f"{logo_2}\n"
       "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
       "'add-email <name> <phone> <email>' to add an e-mail\n"
       "'add-birthday <name> <DD.MM.YYYY>'\n"
@@ -228,9 +254,10 @@ def main():
 
     while True:
         command = input("Enter a command: ").strip()
-        if command in ["close", "exit", "end"]:
+        if command in ["close", "exit", "end", "bye"]:
             address_book.save_to_file("contacts")
-            print("Good bye! May the Force be with you!")
+            print(f"{LOGO}\nGood bye! May the Force be with you!")
+            #print("Good bye! May the Force be with you!")
             note_book.save_to_file("notes")
             print("Good bye!")
             break
