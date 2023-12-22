@@ -147,7 +147,7 @@ def print_supported_commands():
       "'add-phone <name> <phone> <note>' to add note you must\n"
       "'change <name> <new phone>' to change contact\n"
       "'phone-name' to see a phone and a name input\n"
-      "'find <criteria>' to find contact by user criteria (enter min. 3 symbols for criteria)\n"
+      "'findall <criteria>' to find contact by user criteria (enter min. 3 symbols for criteria)\n"
       "'delete' <name> <phone> to delete contact\n"
       "'birthdays' to see upcoming birthdays for the next 7 days\n"
       "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
@@ -282,7 +282,7 @@ def main():
             print(handle_add_email(command, address_book))
         elif command.startswith("add-phone"):
             print(handle_add_phone(command, address_book))
-        elif command.startswith("find"):
+        elif command.startswith("findall"):
             print(handle_find_by_criteria(command, address_book))
         elif command == "birthdays":
             handle_all_birthdays(address_book)
