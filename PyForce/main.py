@@ -1,8 +1,11 @@
 from models import *
 from datetime import datetime
 from modelsfornotes import *
+from playsound import playsound
+import threading 
 
 LOGO_VADER = r"""
+
                        .-.
                       |_:_|
                      /(_Y_)\
@@ -26,7 +29,6 @@ LOGO_VADER = r"""
           /___.-/_|-'   \  \
                          '-'
 """
-
 LOGO_C3PO = r"""
           ___
          /---\
@@ -206,6 +208,8 @@ def print_supported_commands():
 
 def handle_notes_add(command, note_book):
     _, title, text = command.split(":")
+    title = title.strip()
+    text = text.strip()
     note_book.addnote(title, text)
     tags_to_add = input(
         'Note was added. Do you want to add tags? If yes, write separate by ",", if not, put "n"'
@@ -260,9 +264,15 @@ def handle_addtag(command, note_book):
     print(
         f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
     )
-
+def play_music():
+    playsound('Star_Wars_R2-D2_Beep_Sound_Effect.mp3')
 
 def main():
+  
+    playsound('Lightsaber_Igniting_Sound_Effect.mp3')
+    music_thread = threading.Thread(target=play_music)
+    music_thread.start()
+
     try:
         with open("contacts", "rb"):
             pass
@@ -298,10 +308,11 @@ def main():
             address_book.save_to_file("contacts")
             print(f"{LOGO_VADER}\nGood bye! May the Force be with you!")
             note_book.save_to_file("notes")
-            print("Good bye!")
+            playsound('Lightsaber_Igniting_Sound_Effect.mp3')
             break
         elif command in ["hello", "hi"]:
             print(handle_hello())
+            playsound('Star_Wars_Empire_Music_Background.mp3')
         elif command.startswith("change"):
             print(handle_change(command, address_book))
         elif command.startswith("phone"):
@@ -332,7 +343,10 @@ def main():
             else:
                 print("No contacts young Jedi. Please add contacts")
         elif command in ["?", "help", "how"]:
+            music_thread = threading.Thread(target=play_music)
+            music_thread.start()
             print_supported_commands()
+
         elif command.startswith("add-address"):
             print(handle_add_address(command, address_book))
         elif command.startswith("add-email"):
