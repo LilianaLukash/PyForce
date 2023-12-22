@@ -282,9 +282,11 @@ def main():
             address_book.save_to_file("contacts")
             print("Good bye! May the Force be with you!")
             note_book.save_to_file("notes")
-            print("Good bye!")
+            playsound('Lightsaber_Powering_Down_Sound_Effect.mp3')
             break
         elif command in ["hello", "hi"]:
+            music_thread = threading.Thread(target=play_music)
+            music_thread.start()
             print(handle_hello())
         elif command in ["?", "help", "how"]:
             print_supported_commands()
@@ -301,6 +303,8 @@ def main():
         elif command.startswith("show-birthday"):
             print(handle_show_birthday(command, address_book))
         elif command.startswith("add-contact"):
+            music_thread = threading.Thread(target=play_music)
+            music_thread.start()
             print(handle_add(command, address_book))
         elif command.startswith("birthdays"):
             parts = command.split()
@@ -325,6 +329,8 @@ def main():
         elif command.startswith("add-phone"):
             print(handle_add_phone(command, address_book))
         elif command.startswith("findall"):
+            music_thread = threading.Thread(target=play_music)
+            music_thread.start()
             print(handle_find_by_criteria(command, address_book))
         elif command == "birthdays":
             handle_all_birthdays(address_book)
