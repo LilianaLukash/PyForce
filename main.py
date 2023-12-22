@@ -2,7 +2,7 @@ from models import *
 from datetime import datetime
 from modelsfornotes import *
 from playsound import playsound
-
+import threading 
 LOGO = r"""
                        .-.
                       |_:_|
@@ -239,11 +239,14 @@ def handle_addtag(command, note_book):
     print(
         f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
     )
-
+def play_music():
+    playsound('Star_Wars_R2-D2_Beep_Sound_Effect.mp3')
 
 def main():
     
     playsound('Lightsaber_Igniting_Sound_Effect.mp3')
+    music_thread = threading.Thread(target=play_music)
+    music_thread.start()
     try:
         with open("contacts", "rb"):
             pass
