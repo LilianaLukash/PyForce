@@ -52,6 +52,7 @@ LOGO_C3PO = r"""
       |:  | |  :|      
 """
 
+
 def input_error(func):
     def wrapper(*args, **kwargs):
         try:
@@ -173,7 +174,7 @@ def handle_find_by_criteria(command, address_book):
         return "Please enter min. 3 symbols for search criteria"
     records = address_book.find_by_criteria(criteria)
     result = f"Found {len(records)} record(s) for criteria - {criteria} :\n"
-    return result + f"{'\n'.join(s for s in records)}"
+    return "\n".join(records)
 
 
 @input_error
@@ -187,18 +188,20 @@ def handle_show_birthday(command, address_book):
 
 
 def print_supported_commands():
-    print(f"{LOGO_C3PO}\n"
-      "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
-      "'add-email <name> <phone> <email>' to add an e-mail\n"
-      "'add-birthday <name> <DD.MM.YYYY>'\n"
-      "'add-phone <name> <phone> <note>' to add note you must\n"
-      "'change <name> <new phone>' to change contact\n"
-      "'phone-name' to see a phone and a name input\n"
-      "'delete' <name> <phone> to delete contact\n"
-      "'birthdays' to see upcoming birthdays for the next 7 days\n"
-      "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
-      "'all' to see all the addressbook\n"
-      "'close' to end the assistant")
+    print(
+        f"{LOGO_C3PO}\n"
+        "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
+        "'add-email <name> <phone> <email>' to add an e-mail\n"
+        "'add-birthday <name> <DD.MM.YYYY>'\n"
+        "'add-phone <name> <phone> <note>' to add note you must\n"
+        "'change <name> <new phone>' to change contact\n"
+        "'phone-name' to see a phone and a name input\n"
+        "'delete' <name> <phone> to delete contact\n"
+        "'birthdays' to see upcoming birthdays for the next 7 days\n"
+        "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
+        "'all' to see all the addressbook\n"
+        "'close' to end the assistant"
+    )
 
 
 def handle_notes_add(command, note_book):
