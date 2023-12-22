@@ -1,6 +1,7 @@
 from models import *
 from datetime import datetime
 from modelsfornotes import *
+from playsound import playsound
 
 LOGO = r"""
                        .-.
@@ -149,7 +150,8 @@ def handle_find_by_criteria(command, address_book):
         return "Please enter min. 3 symbols for search criteria"
     records = address_book.find_by_criteria(criteria)
     result = f"Found {len(records)} record(s) for criteria - {criteria} :\n"
-    return result + f"{'\n'.join(s for s in records)}"
+
+    return result + f"{' '.join(s for s in records)}"
 
 
 @input_error
@@ -240,6 +242,8 @@ def handle_addtag(command, note_book):
 
 
 def main():
+    
+    playsound('Lightsaber_Igniting_Sound_Effect.mp3')
     try:
         with open("contacts", "rb"):
             pass
@@ -279,6 +283,8 @@ def main():
             break
         elif command in ["hello", "hi"]:
             print(handle_hello())
+        elif command in ["?", "help", "how"]:
+            print_supported_commands()
         elif command.startswith("change"):
             print(handle_change(command, address_book))
         elif command.startswith("phone"):
@@ -308,8 +314,7 @@ def main():
                 handle_all_birthdays(address_book, num_of_days)
             else:
                 print("No contacts young Jedi. Please add contacts")
-        elif command in ["?", "help", "how"]:
-            print_supported_commands()
+       
         elif command.startswith("add-address"):
             print(handle_add_address(command, address_book))
         elif command.startswith("add-email"):
