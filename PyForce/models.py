@@ -487,6 +487,10 @@ class AddressBook:
 
 
 def handle_all_birthdays(address_book, num_of_days=7):
+    if num_of_days > 365:
+        print(f"Maximum range for the birthday list is 1 year. Got '{num_of_days}'")
+        return
+    
     birthdays_by_date = defaultdict(list)
 
     today = datetime.now().date()
@@ -503,21 +507,16 @@ def handle_all_birthdays(address_book, num_of_days=7):
                 ):
                     birthdays_by_date[future_date].append(name)
 
-    while birthdays_by_date:
-        upcoming_dates = [
-            today + timedelta(days=day_offset) for day_offset in range(num_of_days)
-        ]
-
-        for day in upcoming_dates:
-            day_of_week = day.strftime("%A")
-            if names := birthdays_by_date.get(day, []):
-                names = [name.capitalize() for name in names]
+    upcoming_dates = [
+            today + timedelta(days=day_offset) for day_offset in range(num_of_days)]
+    
+    if not any(date in [today + timedelta(days=i) for i in range(num_of_days)] for date in birthdays_by_date):
+        print(f"No birthdays in the next {num_of_days} days young Jedi.")
+    else:
+        for date, names in birthdays_by_date.items():
+            if date in [today + timedelta(days=i) for i in range(num_of_days)]:
+                day_of_week = date.strftime("%A")
                 if day_of_week == "Saturday":
                     day_of_week = "Monday"
-                print(f"{day_of_week} ({day.strftime('%d-%m')}): {', '.join(names)}")
-
-            if day in birthdays_by_date:
-                del birthdays_by_date[day]
-
-    if not birthdays_by_date:
-        print(f"No birthdays in the next {num_of_days} days young Jedi.")
+                names = [name.capitalize() for name in names]
+                print(f"{day_of_week} ({date.strftime('%d.%m')}): {', '.join(names)}")   

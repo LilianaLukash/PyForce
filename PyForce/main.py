@@ -188,11 +188,13 @@ def handle_show_birthday(command, address_book):
 
 def print_supported_commands():
     print(f"{LOGO_C3PO}\n"
+      "'add-contact <name> <phone><birthday><address><email>' successively through <enter>\n"
       "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
       "'add-email <name> <phone> <email>' to add an e-mail\n"
       "'add-birthday <name> <DD.MM.YYYY>'\n"
       "'add-phone <name> <phone> <note>' to add note you must\n"
       "'change <name> <new phone>' to change contact\n"
+      "'findall <criteria> search of contacts by criteria from 3 symbols\n"
       "'phone-name' to see a phone and a name input\n"
       "'delete' <name> <phone> to delete contact\n"
       "'birthdays' to see upcoming birthdays for the next 7 days\n"
