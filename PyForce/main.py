@@ -225,6 +225,7 @@ def print_supported_commands():
     )
 
 
+@input_error
 def handle_notes_add(command, note_book):
     _, title, text = command.split(":")
     title = title.strip()
@@ -243,16 +244,19 @@ def handle_notes_add(command, note_book):
                 print(f"Note with title'{title}' was not found")
 
 
+@input_error
 def handle_notes_edit(command, note_book):
     _, title, new_text = command.split(":")
     note_book.editbytitle(title, new_text)
 
 
+@input_error
 def handle_notes_remove(command, note_book):
     _, title = command.split(":")
     note_book.removenote(title)
 
 
+@input_error
 def handle_notes_find(command, note_book):
     _, title = command.split(":")
     title = title.strip()
@@ -264,6 +268,7 @@ def handle_notes_find(command, note_book):
         print("No such note")
 
 
+@input_error
 def handle_findbytag(command, note_book):
     _, tag = command.split(":")
     found = note_book.searchbytag(tag)
@@ -276,6 +281,7 @@ def handle_findbytag(command, note_book):
             )
 
 
+@input_error
 def handle_addtag(command, note_book):
     _, title, tag = command.split(":")
     note = note_book.searchbytitle(title)
