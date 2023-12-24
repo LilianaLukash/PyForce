@@ -7,6 +7,7 @@ import threading
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from autocomplete import session
 
+
 LOGO_VADER = r"""
 
                        .-.
@@ -32,6 +33,7 @@ LOGO_VADER = r"""
           /___.-/_|-'   \  \
                          '-'
 """
+
 LOGO_C3PO = r"""
           ___
          /---\
@@ -58,20 +60,40 @@ LOGO_C3PO = r"""
 """
 
 
+LOGO_R2D2 = r"""
+             ___
+          ,-'___'-.
+        ,'  [(_)]  '.
+       |_]||[][O]o[][|
+     _ |_____________| _
+    | []   _______   [] |
+    | []   _______   [] |
+   [| ||      _      || |]
+    |_|| =   [=]     ||_|
+    | || =   [|]     || |
+    | ||      _      || |
+    | ||||   (+)    (|| |
+    | ||_____________|| |
+    |_| \___________/ |_|
+    / \      | |      / \
+   /___\    /___\    /___\
+"""
+
+
 def input_error(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except KeyError:
-            return "Enter user name."
+            return "There is no such сontact young Padawan. <add-contact> first!"
         except ValueError as e:
-            return f"{str(e)}. Enter <?> to find out about all commands"
+            return f"{str(e)}. Make sure you provide data in the correct format. Enter <?> for the instructions"
         except IndexError:
-            return "Give me name and phone please."
+            return "Provide a name and a phone number please young Jedi."
         except TypeError:
-            return "Please use correct number of arguments"
+            return "Please use correct number of arguments young Padawan"
         except Exception as ex:
-            print(f"Unexpected exception {ex}: in def {func.__name__}()")
+            print(f"Unexpected exception young Jedi {ex}: in def {func.__name__}()")
 
     return wrapper
 
@@ -127,11 +149,11 @@ def handle_add(command, address_book):
     birthday = continuous_field_input("Birthday")
     email = continuous_field_input("Email")
     address_book.add_record(name, phone, address, birthday, email)
-    return "Contact added."
+    return "Contact added. May the Force be with you!"
 
 
 @input_error
-def handle_change(command, address_book):
+def handle_change(command, address_book):  # change of phone number
     _, name, old_phone, new_phone = command.split()
     record = address_book.find(name)
     record.edit_phone(old_phone, new_phone)
@@ -212,19 +234,38 @@ def handle_show_birthday(command, address_book):
 def print_supported_commands():
     print(
         f"{LOGO_C3PO}\n"
-        "'add-contact <name> <phone><birthday><address><email>' successively through <enter>\n"
-        "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
-        "'add-email <name> <phone> <email>' to add an e-mail\n"
-        "'add-birthday <name> <DD.MM.YYYY>'\n"
-        "'add-phone <name> <phone> <note>' to add note you must\n"
-        "'change <name> <new phone>' to change contact\n"
+        "'add-contact then <enter>. Successively type in <name><phone><birthday><address><email>'\n"
+        "'add-phone <name> <phone>'to add a phone to the existing contact\n"
+        "'add-email <name> <email>' to add an e-mail to the existing contact\n"
+        "'add-email <name> <phone> <email>' to add an e-mail to the existing contact\n"  # change e-mail
+        "'add-address <name> <actual-adвress-in-one-string>' to add an address the existing contact\n"
+        "'add-note <name> <phone> <note>' to add note you must\n"
+        "'change-phone <name> <old phone> <new phone>' to change phone\n"
         "'findall <criteria> search of contacts by criteria from 3 symbols\n"
-        "'phone-name' to see a phone and a name input\n"
-        "'delete' <name> <phone> to delete contact\n"
+        "'phone <name>' to see a phone and a name input\n"
+        "'show-birthday <name>' to see birthday date for the contact\n"
+        "'change-birthday <name> <DD.MM.YYYY>'\n"  #  re-write
         "'birthdays' to see upcoming birthdays for the next 7 days\n"
         "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
         "'all' to see all the addressbook\n"
+        "'delete' <name>  to delete the contact\n"
+        "'notes-help' if you want to see intstructions on how to add notes\n"
         "'close' to end the assistant"
+    )
+
+
+def print_notes_help_commands():
+    print(
+        f"{LOGO_R2D2}\n"
+        " If you want to add notes follow the instructions below: \n"
+        "'<noteadd : title : note >' - to add a note\n"
+        "'type in <tag, tag, tag>' if you want tags\n"
+        "'<notesall>' - to print all notes\n"
+        "'<notesfind : title>' - search a note by title\n"
+        "'<notesedit : title>' - search by title and re-write\n"
+        "'<findbytag : title>' - find a note by tag\n"
+        "'<addtag:title :<tag>>' add tag to a note by title\n"
+        "'<notesremove: title>' - remove a note by title\n"
     )
 
 
@@ -235,7 +276,7 @@ def handle_notes_add(command, note_book):
     text = text.strip()
     note_book.addnote(title, text)
     tags_to_add = input(
-        'Note was added. Do you want to add tags? If yes, write separate by ",", if not, put "n"'
+        'Note was added.\nDo you want to add tags?\nIf yes, write separate by ",", if not, put "n": '
     )
     if tags_to_add != "n":
         tags = tags_to_add.split(",")
@@ -339,7 +380,7 @@ def main():
         elif command in ["hello", "hi"]:
             print(handle_hello())
 
-        elif command.startswith("change"):
+        elif command.startswith("change-phone"):
             print(handle_change(command, address_book))
         elif command.startswith("phone"):
             print(handle_phone(command, address_book))
@@ -347,7 +388,7 @@ def main():
             print(handle_all(address_book))
         elif command.startswith("delete"):
             print(handle_delete(command, address_book))
-        elif command.startswith("add-birthday"):
+        elif command.startswith("change-birthday"):
             print(handle_add_birthday(command, address_book))
         elif command.startswith("show-birthday"):
             print(handle_show_birthday(command, address_book))
@@ -370,7 +411,8 @@ def main():
                 print("No contacts young Jedi. Please add contacts")
         elif command in ["?", "help", "how"]:
             print_supported_commands()
-
+        elif command in ["note-help", "notes-help", "notehelp", "noteshelp"]:
+            print_notes_help_commands()
         elif command.startswith("add-address"):
             print(handle_add_address(command, address_book))
         elif command.startswith("add-email"):

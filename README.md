@@ -5,9 +5,10 @@ A PyForce personal assistant that helps you not to forget to congratulate your c
 ## Installation
 
 Instructions for installing the project:
-- Step 1: ...
-- Step 2: ...
-- ...
+- Step 1: use command: <pip install .> from the directory setup.py of PyForce is located in
+- Check Installed Packages: You can use pip list or pip show PyForce
+-to Uninstall use pip uninstall PyForce
+
 
 ## Usage
 
@@ -20,19 +21,36 @@ to type in command <birthdays>. The assistant will provide you with a list of up
 
 Full list of commands is next:
 
-add-phone <name> <phone>'to add/create new contact or to add phone
-add-email <name> <phone> <email>' to add an e-mail
-'add-birthday <name> <DD.MM.YYYY>'
-'add-phone <name> <phone> <note>' to add note you must
-'change <name> <new phone>' to change contact
-'phone-name' to see a phone and a name input
-'delete' <name> <phone> to delete contact
-'birthdays' to see upcoming birthdays for the next 7 days
-'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays
-'all' to see all the addressbook
-'close' to end the assistant"
+"'add-contact then <enter>. Successively type in <name><phone><birthday><address><email>'\n"
+"'add-phone <name> <phone>'to add a phone to the existing contact"
+"'add-email <name> <email>' to add an e-mail to the existing contact"
+"'add-email <name> <phone> <email>' to add an e-mail to the existing contact"
+"'add-address <name> <actual-adвress-in-one-string>' to add an address the existing contact"
+"'add-note <name> <phone> <note>' to add note you must"
+"'change-phone <name> <old phone> <new phone>' to change phone"
+"'findall <criteria> search of contacts by criteria from 3 symbols"
+"'phone <name>' to see a phone and a name input"
+"'show-birthday <name>' to see birthday date for the contact"
+"'change-birthday <name> <DD.MM.YYYY>'"
+"'birthdays' to see upcoming birthdays for the next 7 days"
+"'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays"
+"'all' to see all the addressbook"
+"'delete' <name>  to delete the contact"
+"'notes-help' if you want to see intstructions on how to add notes"
+"'close' to end the assistant"
 
 
+To use notes, use the following commands and instructions:
+
+ If you want to add notes follow the instructions below: "
+"'<noteadd : title : note >' - to add a note"
+"'type in <tag, tag, tag>' if you want tags"
+"'<notesall>' - to print all notes"
+"'<notesfind : title>' - search a note by title"
+"'<notesedit : title>' - search by title and re-write"
+"'<findbytag : title>' - find a note by tag"
+"'<addtag:title :<tag>>' add tag to a note by title"
+"'<notesremove: title>' - remove a note by title"
 
 ## Configuration
 
@@ -44,12 +62,17 @@ Usage
 After installation, you can import PyForce in your Python scripts:
 import PyForce
 
-- ...
 
 ## Contributing
 
 Guidelines for contributing:
 https://github.com/LilianaLukash/PyForce/
+
+###Requirements
+python =>=3.8
+
+
+
 
 
 ##License
