@@ -3,6 +3,9 @@ from datetime import datetime
 from modelsfornotes import *
 import threading 
 
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from autocomplete import session
+
 LOGO_VADER = r"""
 
                        .-.
@@ -297,7 +300,11 @@ def main():
         print("No data found in NotesBook file. Creating a new one.")
 
     while True:
-        command = input("Enter a command: ").strip()
+        command = session.prompt(
+            "Enter a command: ",
+            auto_suggest=AutoSuggestFromHistory(),
+            complete_while_typing=False,
+        )
         if command in ["close", "exit", "end", "bye"]:
             address_book.save_to_file("contacts")
             print(f"{LOGO_VADER}\nGood bye! May the Force be with you!")
