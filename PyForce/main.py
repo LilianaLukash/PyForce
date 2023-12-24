@@ -1,7 +1,8 @@
+import models
 from models import *
 from datetime import datetime
 from modelsfornotes import *
-import threading 
+import threading
 
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from autocomplete import session
@@ -80,34 +81,51 @@ def handle_hello():
     return "Greetings! How can I help you young Jedi?"
 
 
+FIELD_NAME_TO_USER_OUTPUT_MAP = {
+    "Name": [
+        "Enter Name: ",
+        "Please use valid name, or type 'close' to exit in main menu",
+    ],
+    "Phone": [
+        "Enter Phone: ",
+        "Please use valid phone number, or type 'close' to exit in main menu",
+    ],
+    "Address": [
+        "Enter Address: ",
+        "Please use valid address, or type 'close' to exit in main menu",
+    ],
+    "Birthday": [
+        "Enter Birthday in DD.MM.YYYY format: ",
+        "Please use valid date, or type 'close' to exit in main menu",
+    ],
+    "Email": [
+        "Enter Email: ",
+        "Please use valid Email, or type 'close' to exit in main menu",
+    ],
+}
+
+
+def continuous_field_input(field_class_name):
+    field_class = getattr(models, field_class_name, None)
+    while True:
+        field_value = input(FIELD_NAME_TO_USER_OUTPUT_MAP.get(field_class_name)[0])
+        if field_value == "close":
+            raise ValueError("Exited to main menu")
+        if not field_class.is_valid(field_value):
+            print(FIELD_NAME_TO_USER_OUTPUT_MAP.get(field_class_name)[1])
+        else:
+            break
+    return field_value
+
+
 @input_error
 def handle_add(command, address_book):
     _ = command.split()
-    while True:
-        name = input("Enter Name: ")
-        if name == "close":
-            return "Exited to main menu"
-        if not Name.is_valid(name):
-            print("Please use valid name, or type 'close' to exit in main menu")
-        else:
-            break
-
-    while True:
-        phone = input("Enter Phone: ")
-        if phone == "close":
-            return "Exited to main menu"
-        if not Phone.is_valid(phone):
-            print("Please use valid phone number, or 'close' to exit in main menu")
-        else:
-            break
-
-    address = input("Enter Address: ")
-    birthday = input("Enter Birthday in DD.MM.YYYY format: ")
-    email = input("Enter Email: ")
-
-    address = address or None
-    birthday = birthday or None
-    email = email or None
+    name = continuous_field_input("Name")
+    phone = continuous_field_input("Phone")
+    address = continuous_field_input("Address")
+    birthday = continuous_field_input("Birthday")
+    email = continuous_field_input("Email")
     address_book.add_record(name, phone, address, birthday, email)
     return "Contact added."
 
@@ -192,22 +210,25 @@ def handle_show_birthday(command, address_book):
 
 
 def print_supported_commands():
-    print(f"{LOGO_C3PO}\n"
-      "'add-contact <name> <phone><birthday><address><email>' successively through <enter>\n"
-      "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
-      "'add-email <name> <phone> <email>' to add an e-mail\n"
-      "'add-birthday <name> <DD.MM.YYYY>'\n"
-      "'add-phone <name> <phone> <note>' to add note you must\n"
-      "'change <name> <new phone>' to change contact\n"
-      "'findall <criteria> search of contacts by criteria from 3 symbols\n"
-      "'phone-name' to see a phone and a name input\n"
-      "'delete' <name> <phone> to delete contact\n"
-      "'birthdays' to see upcoming birthdays for the next 7 days\n"
-      "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
-      "'all' to see all the addressbook\n"
-      "'close' to end the assistant")
+    print(
+        f"{LOGO_C3PO}\n"
+        "'add-contact <name> <phone><birthday><address><email>' successively through <enter>\n"
+        "'add-phone <name> <phone>'to add/create new contact or to add phone\n"
+        "'add-email <name> <phone> <email>' to add an e-mail\n"
+        "'add-birthday <name> <DD.MM.YYYY>'\n"
+        "'add-phone <name> <phone> <note>' to add note you must\n"
+        "'change <name> <new phone>' to change contact\n"
+        "'findall <criteria> search of contacts by criteria from 3 symbols\n"
+        "'phone-name' to see a phone and a name input\n"
+        "'delete' <name> <phone> to delete contact\n"
+        "'birthdays' to see upcoming birthdays for the next 7 days\n"
+        "'birthdays <number of days>'-> if you want to specify for how many days forward you want a list of birthdays\n"
+        "'all' to see all the addressbook\n"
+        "'close' to end the assistant"
+    )
 
 
+@input_error
 def handle_notes_add(command, note_book):
     _, title, text = command.split(":")
     title = title.strip()
@@ -226,16 +247,19 @@ def handle_notes_add(command, note_book):
                 print(f"Note with title'{title}' was not found")
 
 
+@input_error
 def handle_notes_edit(command, note_book):
     _, title, new_text = command.split(":")
     note_book.editbytitle(title, new_text)
 
 
+@input_error
 def handle_notes_remove(command, note_book):
     _, title = command.split(":")
     note_book.removenote(title)
 
 
+@input_error
 def handle_notes_find(command, note_book):
     _, title = command.split(":")
     title = title.strip()
@@ -247,6 +271,7 @@ def handle_notes_find(command, note_book):
         print("No such note")
 
 
+@input_error
 def handle_findbytag(command, note_book):
     _, tag = command.split(":")
     found = note_book.searchbytag(tag)
@@ -259,6 +284,7 @@ def handle_findbytag(command, note_book):
             )
 
 
+@input_error
 def handle_addtag(command, note_book):
     _, title, tag = command.split(":")
     note = note_book.searchbytitle(title)
@@ -267,9 +293,8 @@ def handle_addtag(command, note_book):
         f"title: {note['title']} | Note: {note['note']} | Tags: {', '.join(note['tags'])}"
     )
 
+
 def main():
-  
-    
     try:
         with open("contacts", "rb"):
             pass
@@ -309,11 +334,11 @@ def main():
             address_book.save_to_file("contacts")
             print(f"{LOGO_VADER}\nGood bye! May the Force be with you!")
             note_book.save_to_file("notes")
-           
+
             break
         elif command in ["hello", "hi"]:
             print(handle_hello())
-            
+
         elif command.startswith("change"):
             print(handle_change(command, address_book))
         elif command.startswith("phone"):
@@ -344,7 +369,6 @@ def main():
             else:
                 print("No contacts young Jedi. Please add contacts")
         elif command in ["?", "help", "how"]:
-            
             print_supported_commands()
 
         elif command.startswith("add-address"):
