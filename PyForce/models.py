@@ -520,3 +520,4 @@ def handle_all_birthdays(address_book, num_of_days=7):
                     day_of_week = "Monday"
                 names = [name.capitalize() for name in names]
                 print(f"{day_of_week} ({date.strftime('%d.%m')}): {', '.join(names)}")   
+
