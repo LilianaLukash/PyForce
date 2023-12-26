@@ -369,7 +369,7 @@ def main():
         command = session.prompt(
             "Enter a command: ",
             auto_suggest=AutoSuggestFromHistory(),
-            complete_while_typing=False,
+            complete_while_typing=True,
         )
         if command in ["close", "exit", "end", "bye"]:
             address_book.save_to_file("contacts")
